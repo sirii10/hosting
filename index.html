@@ -9,10 +9,12 @@
     <h2>📍 Auto Pickup Your Location</h2>
     <button onclick="getLocation()">Get Location</button>
     <p id="status">Click the button to detect your location.</p>
+    <p><strong>Detected Address:</strong> <span id="address">Not Available</span></p>
 
     <script>
         function getLocation() {
             if (navigator.geolocation) {
+                document.getElementById("status").innerHTML = "Detecting location...";
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
             } else {
                 document.getElementById("status").innerHTML = "Geolocation is not supported by this browser.";
@@ -27,10 +29,9 @@
             fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
                 .then(response => response.json())
                 .then(data => {
-                    let location = encodeURIComponent(data.display_name); // Encode for URL
-                    
-                    // Redirect user to Tally Form with location auto-filled
-                    window.location.href = `https://tally.so/r/YOUR_TALLY_FORM_ID?location=${location}`;
+                    let location = data.display_name; // Get address
+                    document.getElementById("status").innerHTML = "Location detected!";
+                    document.getElementById("address").innerText = location; // Show address
                 })
                 .catch(error => {
                     document.getElementById("status").innerHTML = "Error fetching location: " + error;
