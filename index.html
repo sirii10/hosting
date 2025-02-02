@@ -8,13 +8,16 @@
 <body>
     <h2>📍 Auto Pickup Your Location</h2>
     <button onclick="getLocation()">Get Location</button>
-    <p id="status">Click the button to detect your location.</p>
-    <p><strong>Detected Address:</strong> <span id="address">Not Available</span></p>
+    <p id="status" style="display: none;">Detecting location...</p>
+    <p id="address" style="display: none;"><strong>Detected Address:</strong> Not Available</p>
 
     <script>
         function getLocation() {
+            // Show loading text and hide the button after click
+            document.querySelector("button").style.display = "none";
+            document.getElementById("status").style.display = "block";
+            
             if (navigator.geolocation) {
-                document.getElementById("status").innerHTML = "Detecting location...";
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
             } else {
                 document.getElementById("status").innerHTML = "Geolocation is not supported by this browser.";
@@ -30,8 +33,9 @@
                 .then(response => response.json())
                 .then(data => {
                     let location = data.display_name; // Get address
-                    document.getElementById("status").innerHTML = "Location detected!";
-                    document.getElementById("address").innerText = location; // Show address
+                    document.getElementById("status").style.display = "none"; // Hide loading
+                    document.getElementById("address").innerText = "Detected Address: " + location; // Show address
+                    document.getElementById("address").style.display = "block"; // Show address
                 })
                 .catch(error => {
                     document.getElementById("status").innerHTML = "Error fetching location: " + error;
